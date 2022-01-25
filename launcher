@@ -1,0 +1,14 @@
+#!/usr/bin/env python
+import re
+from sys import argv
+
+
+if __name__ == "__main__":
+    for filename in argv[1:]:
+        with open(filename, 'r') as file:
+            line = file.read()
+            i = 1
+            for l in line.split('\n'):
+                if len(re.findall(" +$", l)) > 0:
+                    print(f"G8: Trailing spaces detected on line {i}.")
+                i += 1
