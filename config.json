@@ -1,0 +1,12 @@
+{
+    "norm" : [
+        {
+            "name": "G8: Trailing spaces",
+            "regex": " +$"
+        },
+        {
+            "name": "L4: Curly brackets misplaced",
+            "regex": "([{}].+)|(\\S.+})"
+        }
+    ]
+}

@@ -1,14 +1,16 @@
 #!/usr/bin/env python
 import re
+import json
 from sys import argv
 
 
 if __name__ == "__main__":
+    with open('config.json') as json_file:
+        data = json.load(json_file)
     for filename in argv[1:]:
         with open(filename, 'r') as file:
-            line = file.read()
-            i = 1
-            for l in line.split('\n'):
-                if len(re.findall(" +$", l)) > 0:
-                    print(f"G8: Trailing spaces detected on line {i}.")
-                i += 1
+            for index, line in enumerate(file.read().split('\n')):
+                for rule in data["norm"]:
+                    if len(re.findall(rule["regex"], line)) > 0:
+                        name = rule["name"]
+                        print(f"{name} detected on line {index + 1}.")
