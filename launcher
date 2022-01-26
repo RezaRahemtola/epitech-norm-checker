@@ -4,13 +4,19 @@ import json
 from sys import argv
 
 
+def get_json_data(filepath: str):
+    with open(filepath) as json_file:
+        return json.load(json_file)
+
+def run_regex_on_line(line: str, index: int, json_data):
+    for rule in json_data["norm"]:
+        if len(re.findall(rule["regex"], line)) > 0:
+            name = rule["name"]
+            print(f"{name} detected on line {index + 1}.")
+
 if __name__ == "__main__":
-    with open('config.json') as json_file:
-        data = json.load(json_file)
+    json_data = get_json_data("config.json")
     for filename in argv[1:]:
         with open(filename, 'r') as file:
             for index, line in enumerate(file.read().split('\n')):
-                for rule in data["norm"]:
-                    if len(re.findall(rule["regex"], line)) > 0:
-                        name = rule["name"]
-                        print(f"{name} detected on line {index + 1}.")
+                run_regex_on_line(line, index, json_data)
