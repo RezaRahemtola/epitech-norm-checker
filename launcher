@@ -9,32 +9,39 @@ def get_json_data(filepath: str):
     with open(filepath) as json_file:
         return json.load(json_file)
 
-def run_regex_on_file(file, filename: str):
+def run_regex_on_file(filename: str, json_data):
+    file = open(filename, 'r')
     found = 0
-    errors_str = filename
+    if (is_norm_error_in_file(filename)):
+        print(f"\n{filename}")
     for index, line in enumerate(file.read().split('\n')):
-        tmp_found, tmp_str = run_regex_on_line(line, index, json_data)
-        found += tmp_found
-        errors_str += tmp_str
-    if found > 0:
-        print(f"{errors_str}\n")
+        found += run_regex_on_line(line, index, json_data)
+    file.close()
     return found
 
 def run_regex_on_line(line: str, index: int, json_data):
-    str = ""
     found = 0
     for rule in json_data["norm"]:
         if len(re.findall(rule["regex"], line)) > 0:
             found += 1
             name = rule["name"]
-            str += f"\n{name} detected on line {index + 1}."
-    return found, str
+            print(f"{name} detected on line {index + 1}.")
+    return found
+
+def is_norm_error_in_file(filename: str):
+    file = open(filename, 'r')
+    for line in file.read().split('\n'):
+        for rule in json_data["norm"]:
+            if len(re.findall(rule["regex"], line)) > 0:
+                file.close()
+                return True
+    file.close()
+    return False
 
 if __name__ == "__main__":
     json_data = get_json_data("config.json")
     found = 0
     for folder in argv[1:]:
         for filename in glob.glob(folder + '/**/*.c', recursive=True):
-            with open(filename, 'r') as file:
-                found += run_regex_on_file(file, filename)
-    print(f"Total of {found} coding style errors found.")
+            found += run_regex_on_file(filename, json_data)
+    print(f"\nTotal of {found} coding style errors found.")
