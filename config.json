@@ -2,15 +2,13 @@
     "norm" : [
         {
             "name": "G6: Include only .h files",
+            "type": "Major",
             "regex": "#include *[\"<][A-z]+.[^h][>\"]"
         },
         {
             "name": "G8: Trailing spaces",
+            "type": "Minor",
             "regex": " +$"
-        },
-        {
-            "name": "L4: Curly brackets misplaced",
-            "regex": "([{}].+)|(\\S.+})"
         }
     ]
 }
