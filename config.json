@@ -1,6 +1,10 @@
 {
     "norm" : [
         {
+            "name": "G6: Include only .h files",
+            "regex": "#include *[\"<][A-z]+.[^h][>\"]"
+        },
+        {
             "name": "G8: Trailing spaces",
             "regex": " +$"
         },
