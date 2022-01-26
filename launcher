@@ -11,19 +11,19 @@ def get_json_data(filepath: str):
 
 def run_regex_on_file(filename: str, json_data):
     file = open(filename, 'r')
-    found = 0
+    found = []
     if (is_norm_error_in_file(filename)):
-        print(f"\n{filename}")
+        print(f"\n{filename} :")
     for index, line in enumerate(file.read().split('\n')):
         found += run_regex_on_line(line, index, json_data)
     file.close()
     return found
 
 def run_regex_on_line(line: str, index: int, json_data):
-    found = 0
+    found = []
     for rule in json_data["norm"]:
         if len(re.findall(rule["regex"], line)) > 0:
-            found += 1
+            found.append(rule["type"])
             name = rule["name"]
             print(f"{name} detected on line {index + 1}.")
     return found
@@ -40,8 +40,9 @@ def is_norm_error_in_file(filename: str):
 
 if __name__ == "__main__":
     json_data = get_json_data("config.json")
-    found = 0
+    found = []
     for folder in argv[1:]:
         for filename in glob.glob(folder + '/**/*.c', recursive=True):
             found += run_regex_on_file(filename, json_data)
-    print(f"\nTotal of {found} coding style errors found.")
+    major, minor, info = found.count("major"), found.count("minor"), found.count("info")
+    print(f"\nTotal of {len(found)} coding style errors found ({major} major, {minor} minor and {info} info).")

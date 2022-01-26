@@ -2,12 +2,12 @@
     "norm" : [
         {
             "name": "G6: Include only .h files",
-            "type": "Major",
+            "type": "major",
             "regex": "#include *[\"<][A-z]+.[^h][>\"]"
         },
         {
             "name": "G8: Trailing spaces",
-            "type": "Minor",
+            "type": "minor",
             "regex": " +$"
         }
     ]
