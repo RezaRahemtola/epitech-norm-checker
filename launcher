@@ -10,20 +10,16 @@ def get_json_data(filepath: str) -> dict:
     with open(filepath) as json_file:
         return json.load(json_file)
 
-def run_regex_on_lines(filename: str, content: str, json_data: dict) -> list:
-    found = []
+def run_regex(filename: str, json_data: dict) -> list:
+    file = open(filename, 'r')
+    content: str = file.read()
+    found: list = []
 
     for index, line in enumerate(content.split('\n')):
         for rule in json_data["norm"]:
             if len(re.findall(rule["regex"], line)) > 0:
                 found.append({"type": rule["type"], "file": filename, "line": index + 1, "name": rule["name"]})
-    return found
-
-def run_regex(filename: str, json_data: dict) -> list:
-    file = open(filename, 'r')
-    content = file.read()
-    found = []
-    found += run_regex_on_lines(filename, content, json_data)
+    file.close()
     return found
 
 def run_functions(filename: str) -> list:
