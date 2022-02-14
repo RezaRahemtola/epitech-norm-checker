@@ -3,19 +3,12 @@ import re
 import json
 import glob
 from sys import argv
+import checks
 
 
 def get_json_data(filepath: str) -> dict:
     with open(filepath) as json_file:
         return json.load(json_file)
-
-def run_regex_on_file(filename: str, content: str, json_data: dict) -> list:
-    found = []
-
-    for rule in json_data["norm"]:
-        if len(re.findall(rule["regex"], content)) > 0:
-            found.append({"type": rule["type"], "file": filename, "line": -1, "name": rule["name"]})
-    return found
 
 def run_regex_on_lines(filename: str, content: str, json_data: dict) -> list:
     found = []
@@ -26,12 +19,11 @@ def run_regex_on_lines(filename: str, content: str, json_data: dict) -> list:
                 found.append({"type": rule["type"], "file": filename, "line": index + 1, "name": rule["name"]})
     return found
 
-def run_regex(filename: str, json_file: dict, json_line: dict) -> list:
+def run_regex(filename: str, json_data: dict) -> list:
     file = open(filename, 'r')
     content = file.read()
     found = []
-    found += run_regex_on_file(filename, content, json_file)
-    found += run_regex_on_lines(filename, content, json_line)
+    found += run_regex_on_lines(filename, content, json_data)
     return found
 
 def run_functions(filename: str) -> list:
@@ -40,6 +32,7 @@ def run_functions(filename: str) -> list:
     found = []
     if not content.endswith('\n'):
         found.append({"type": "info", "file": filename, "line": content.count('\n') + 1, "name": "A3: Line break at the end of file"})
+    found += checks.function_separation(filename, content)
     return found
 
 def display_output(found: list) -> None:
@@ -52,11 +45,11 @@ def display_output(found: list) -> None:
     print(f"\nTotal of {len(found)} coding style errors found ({major} major, {minor} minor and {info} info).")
 
 if __name__ == "__main__":
-    json_line = get_json_data("config_line.json")
-    json_file = get_json_data("config_file.json")
+    json_data = get_json_data("config.json")
     found = []
+
     for folder in argv[1:]:
         for filename in glob.glob(folder + '/**/*.c', recursive=True):
-            found += run_regex(filename, json_file, json_line)
+            found += run_regex(filename, json_data)
             found += run_functions(filename)
     display_output(found)
