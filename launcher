@@ -1,14 +1,14 @@
 #!/usr/bin/env python
 import re
-import json
-import glob
-from sys import argv
 import checks
+from json import load as loadJSON
+from sys import argv
+from glob import glob
 
 
 def get_json_data(filepath: str) -> dict:
     with open(filepath) as json_file:
-        return json.load(json_file)
+        return loadJSON(json_file)
 
 def run_regex(filename: str, json_data: dict) -> list:
     file = open(filename, 'r')
@@ -45,7 +45,7 @@ if __name__ == "__main__":
     found = []
 
     for folder in argv[1:]:
-        for filename in glob.glob(folder + '/**/*.c', recursive=True):
+        for filename in glob(folder + '/**/*.c', recursive=True):
             found += run_regex(filename, json_data)
             found += run_functions(filename)
     display_output(found)
