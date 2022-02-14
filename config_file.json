@@ -1,0 +1,9 @@
+{
+    "norm" : [
+        {
+            "name": "G2: Separation of functions",
+            "type": "minor",
+            "regex": "}\n{3,}"
+        }
+    ]
+}

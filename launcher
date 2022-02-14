@@ -9,40 +9,49 @@ def get_json_data(filepath: str):
     with open(filepath) as json_file:
         return json.load(json_file)
 
-def run_regex_on_file(filename: str, json_data):
-    file = open(filename, 'r')
-    found = []
-    if (is_norm_error_in_file(filename)):
-        print(f"\n{filename} :")
-    for index, line in enumerate(file.read().split('\n')):
-        found += run_regex_on_line(line, index, json_data)
-    file.close()
-    return found
-
-def run_regex_on_line(line: str, index: int, json_data):
+def run_regex_on_file(filename: str, content: str, json_data) -> list:
     found = []
     for rule in json_data["norm"]:
-        if len(re.findall(rule["regex"], line)) > 0:
-            found.append(rule["type"])
-            name = rule["name"]
-            print(f"{name} detected on line {index + 1}.")
+        if len(re.findall(rule["regex"], content)) > 0:
+            found.append({"type": rule["type"], "file": filename, "line": -1, "name": rule["name"]})
     return found
 
-def is_norm_error_in_file(filename: str):
-    file = open(filename, 'r')
-    for line in file.read().split('\n'):
+def run_regex_on_lines(filename: str, content: str, json_data) -> list:
+    found = []
+    for index, line in enumerate(content.split('\n')):
         for rule in json_data["norm"]:
             if len(re.findall(rule["regex"], line)) > 0:
-                file.close()
-                return True
-    file.close()
-    return False
+                found.append({"type": rule["type"], "file": filename, "line": index + 1, "name": rule["name"]})
+    return found
+
+def run_regex(filename: str, json_file, json_line) -> list:
+    file = open(filename, 'r')
+    content = file.read()
+    found = []
+    found += run_regex_on_file(filename, content, json_file)
+    found += run_regex_on_lines(filename, content, json_line)
+    return found
+
+def run_functions(filename: str) -> list:
+    file = open(filename, 'r')
+    content = file.read()
+    found = []
+    if not content.endswith('\n'):
+        found.append({"type": "info", "file": filename, "line": content.count('\n') + 1, "name": "A3: Line break at the end of file"})
+    return found
+
+def display_output(found: list) -> None:
+    for error in found:
+        print(f"{error['name']} detected in {error['file']} on line {error['line']}.")
 
 if __name__ == "__main__":
-    json_data = get_json_data("config.json")
+    json_line = get_json_data("config_line.json")
+    json_file = get_json_data("config_file.json")
     found = []
     for folder in argv[1:]:
         for filename in glob.glob(folder + '/**/*.c', recursive=True):
-            found += run_regex_on_file(filename, json_data)
-    major, minor, info = found.count("major"), found.count("minor"), found.count("info")
-    print(f"\nTotal of {len(found)} coding style errors found ({major} major, {minor} minor and {info} info).")
+            found += run_regex(filename, json_file, json_line)
+            found += run_functions(filename)
+    display_output(found)
+    # major, minor, info = found.count("major"), found.count("minor"), found.count("info")
+    # print(f"\nTotal of {len(found)} coding style errors found ({major} major, {minor} minor and {info} info).")
