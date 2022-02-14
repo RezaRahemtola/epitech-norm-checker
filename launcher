@@ -5,26 +5,28 @@ import glob
 from sys import argv
 
 
-def get_json_data(filepath: str):
+def get_json_data(filepath: str) -> dict:
     with open(filepath) as json_file:
         return json.load(json_file)
 
-def run_regex_on_file(filename: str, content: str, json_data) -> list:
+def run_regex_on_file(filename: str, content: str, json_data: dict) -> list:
     found = []
+
     for rule in json_data["norm"]:
         if len(re.findall(rule["regex"], content)) > 0:
             found.append({"type": rule["type"], "file": filename, "line": -1, "name": rule["name"]})
     return found
 
-def run_regex_on_lines(filename: str, content: str, json_data) -> list:
+def run_regex_on_lines(filename: str, content: str, json_data: dict) -> list:
     found = []
+
     for index, line in enumerate(content.split('\n')):
         for rule in json_data["norm"]:
             if len(re.findall(rule["regex"], line)) > 0:
                 found.append({"type": rule["type"], "file": filename, "line": index + 1, "name": rule["name"]})
     return found
 
-def run_regex(filename: str, json_file, json_line) -> list:
+def run_regex(filename: str, json_file: dict, json_line: dict) -> list:
     file = open(filename, 'r')
     content = file.read()
     found = []
