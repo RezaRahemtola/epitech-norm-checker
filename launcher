@@ -41,8 +41,13 @@ def run_functions(filename: str) -> list:
     return found
 
 def display_output(found: list) -> None:
+    major = len([elem for elem in found if elem["type"] == "major"])
+    minor = len([elem for elem in found if elem["type"] == "minor"])
+    info = len([elem for elem in found if elem["type"] == "info"])
+
     for error in found:
         print(f"{error['name']} detected in {error['file']} on line {error['line']}.")
+    print(f"\nTotal of {len(found)} coding style errors found ({major} major, {minor} minor and {info} info).")
 
 if __name__ == "__main__":
     json_line = get_json_data("config_line.json")
@@ -53,5 +58,3 @@ if __name__ == "__main__":
             found += run_regex(filename, json_file, json_line)
             found += run_functions(filename)
     display_output(found)
-    # major, minor, info = found.count("major"), found.count("minor"), found.count("info")
-    # print(f"\nTotal of {len(found)} coding style errors found ({major} major, {minor} minor and {info} info).")
