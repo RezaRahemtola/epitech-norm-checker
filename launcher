@@ -4,6 +4,7 @@ import checks
 from json import load as loadJSON
 from sys import argv
 from glob import glob
+from termcolor import colored
 
 
 def get_json_data(filepath: str) -> dict:
@@ -12,8 +13,8 @@ def get_json_data(filepath: str) -> dict:
 
 def run_regex(filename: str, json_data: dict) -> list:
     file = open(filename, 'r')
-    content: str = file.read()
-    found: list = []
+    content = file.read()
+    found = []
 
     for index, line in enumerate(content.split('\n')):
         for rule in json_data["norm"]:
@@ -38,8 +39,14 @@ def display_output(found: list) -> None:
     info = len([elem for elem in found if elem["type"] == "info"])
 
     for error in found:
-        print(f"{error['name']} detected in {error['file']} on line {error['line']}.")
-    print(f"\nTotal of {len(found)} coding style errors found ({major} major, {minor} minor and {info} info).")
+        if error["type"] == "major":
+            color = "red"
+        elif error["type"] == "minor":
+            color = "yellow"
+        else:
+            color = "green"
+        print(f"{colored(error['name'] + ' detected in', color)} {colored(error['file'] + ':' + str(error['line']), 'blue')}")
+    print(f"\nTotal of {len(found)} coding style errors found ({colored(major, 'red')} major, {colored(minor, 'yellow')} minor and {colored(info, 'green')} info).")
 
 if __name__ == "__main__":
     json_data = get_json_data("config.json")
