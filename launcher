@@ -26,9 +26,10 @@ def run_functions(filename: str) -> list:
     file = open(filename, 'r')
     content = file.read()
     found = []
-    if not content.endswith('\n'):
-        found.append({"type": "info", "file": filename, "line": content.count('\n') + 1, "name": "A3: Line break at the end of file"})
-    found += checks.function_separation(filename, content)
+    functions = [getattr(checks, elem) for elem in dir(checks) if callable(getattr(checks, elem))]
+
+    for function in functions:
+        found += function(filename, content)
     return found
 
 def display_output(found: list) -> None:
