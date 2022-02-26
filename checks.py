@@ -20,6 +20,6 @@ def function_separation(filename: str, content: str) -> list:
 def leading_line(filename: str, content: str) -> list:
     name = "G9 - Leading/Trailing lines"
 
-    if content.startswith('\n'):
+    if content.startswith('\n') or content.endswith('\n\n'):
         return [{"type": "minor", "file": filename, "line": 1, "name": name}]
     return []

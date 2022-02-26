@@ -19,6 +19,16 @@
             "name": "F3: Number of columns",
             "type": "major",
             "regex": ".{80}"
+        },
+        {
+            "name": "L3: Misplaced spaces",
+            "type": "minor",
+            "regex": "(return|if|else if|else|while|for)[(]{1}"
+        },
+        {
+            "name":"L3: Misplaced spaces",
+            "type": "minor",
+            "regex": "([^(\t ]+_t|int|signed|unsigned|char|long|short|float|double|void|const|struct [^ ]+) {2,}"
         }
     ]
 }
