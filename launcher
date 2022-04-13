@@ -5,6 +5,7 @@ from json import load as loadJSON
 from sys import argv
 from glob import glob
 from termcolor import colored
+from os import path
 
 
 def get_json_data(filepath: str) -> dict:
@@ -49,7 +50,8 @@ def display_output(found: list) -> None:
     print(f"\nTotal of {len(found)} coding style errors found ({colored(major, 'red')} major, {colored(minor, 'yellow')} minor and {colored(info, 'green')} info).")
 
 if __name__ == "__main__":
-    json_data = get_json_data("config.json")
+    current_path = path.dirname(path.realpath(__file__))
+    json_data = get_json_data(current_path + "/config.json")
     found = []
 
     for folder in argv[1:]:
