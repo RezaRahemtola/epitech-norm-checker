@@ -23,8 +23,7 @@ def leading_line(filename: str, content: str) -> list:
     if content.startswith('\n'):
         line.append(1)
     if content.endswith('\n\n'):
-        line.extend([content.count('\n'), content.count('\n')+1])
+        line.append(content.count('\n'))
     if len(line) > 0:
-        line = (', '.join(map(str, line)))
         return [{"type": "minor", "file": filename, "line": line, "name": name}]
     return []
