@@ -21,9 +21,8 @@ def leading_line(filename: str, content: str) -> list:
     name = "G9 - Leading/Trailing lines"
     line = []
     if content.startswith('\n'):
-        line.append(1)
+        line.append({"type": "minor", "file": filename, "line": 1, "name": name})
     if content.endswith('\n\n'):
-        line.append(content.count('\n'))
-    if len(line) > 0:
-        return [{"type": "minor", "file": filename, "line": line, "name": name}]
-    return []
+        line.append({"type": "minor", "file": filename, "line": content.count('\n'), "name": name})
+    return line
+
