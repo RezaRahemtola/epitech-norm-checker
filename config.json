@@ -18,7 +18,7 @@
         {
             "name": "F3: Number of columns",
             "type": "major",
-            "regex": ".{80}"
+            "regex": ".{81}"
         },
         {
             "name": "L3: Misplaced spaces",
